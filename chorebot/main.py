@@ -1,20 +1,18 @@
-from chorebot.config import create_client
+from apscheduler.schedulers.blocking import BlockingScheduler
+from chorebot.chores import daily_update
+from chorebot.log import setup_logging
 
 
 def main():
-    client = create_client()
-    chores = get_chores_board(client)
-    lists = chores.get_lists(None)
-    print lists
-
-
-def get_chores_board(client):
-    boards = client.list_boards()
-    for board in boards:
-        if 'Chores' in board.name:
-            return board
-    raise Exception('Chores board not found.')
-
+    setup_logging()
+    scheduler = BlockingScheduler()
+    daily_trigger = dict(
+        trigger='cron',
+        day_of_week='mon-sat',
+        hour='2'
+    )
+    scheduler.add_job(daily_update, **daily_trigger)
+    scheduler.start()
 
 if __name__ == '__main__':
     main()
