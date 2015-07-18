@@ -19,7 +19,8 @@ Deployment
 You can use [supervisord](http://supervisord.org/index.html) to manage the
 process.
 
-
+Copy the project files to the host. Restart the process with:
+supervisorctl restart chorebot
 
 
 To Do

@@ -7,23 +7,34 @@ logger = get_logger(__name__)
 
 
 def daily_update():
+    now = datetime.now()
     client = create_client()
     chores_board = get_chores_board(client)
     to_do_lists = get_to_do_lists(chores_board)
     daily_chores = []
+    bi_weekly_chores = []
+    weekly_chores = []
     cards = chores_board.get_cards()
     for card in cards:
         card.fetch(False)
         if has_label(card, 'Personal Daily'):
+            set_due_today(card)
             update_personal_daily_chore(card)
         elif has_label(card, 'Daily'):
             set_due_today(card)
             daily_chores.append(card)
+        elif has_label(card, 'Twice weekly') and now.weekday() in [0, 3]:
+            set_due_in(card, 2)
+            bi_weekly_chores.append(card)
+        elif has_label(card, 'Weekly') and now.weekday() == 0:
+            set_due_in(card, 5)
+            weekly_chores.append(card)
     deal(daily_chores, to_do_lists)
+    deal(bi_weekly_chores, to_do_lists)
+    deal(weekly_chores, to_do_lists)
 
 
 def update_personal_daily_chore(card):
-    set_due_today(card)
     todo_list = find_todo_list_by_member(card)
     if todo_list and card.list_id != todo_list.id:
         card.change_list(todo_list.id)
@@ -39,9 +50,13 @@ def deal(cards, lists):
 
 
 def set_due_today(card):
+    set_due_in(card, 0)
+
+
+def set_due_in(card, days):
     # The dates in the library and API are unclear; hack by adding a day, which
     # seems to produce the desired results.
-    card.set_due(datetime.now() + timedelta(days=1))
+    card.set_due(datetime.now() + timedelta(days=days + 1))
 
 
 def has_label(card, label_name):
