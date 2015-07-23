@@ -2,7 +2,38 @@ chorebot
 ========
 
 chorebot helps with the tedious parts of organizing household chores using
-Trello. 
+Trello.
+
+
+Trello Board Setup
+------------------
+
+Create a board that has "Chores" in the name.
+
+Create a holding list for chores. This could be called "Done", but it doesn't
+really matter.
+
+Create a list for each person to be assigned chores. The list should include 
+the person's first name according to their Trello account, as well as "To Do"
+or "ToDo". For example: "Eric - To Do".
+
+Create cards for all your chores. Use labels to indicate how often the chore
+should be done:
+
+* Daily
+* Twice weekly
+* Weekly
+* Monthly
+
+If you want a chore to go to a specific person every time or shuffled among a 
+group of people every time, add the "members" to that card.
+
+Cards without members will be shuffled and dealt among all the to do lists.
+
+Note: When looking for boards, lists, cards and members, chorebot searches 
+case-insensitively, so for example, your board could be "Smithy family chores",
+and your to do list "eric-todo" and those will work just fine.
+
 
 Keys and Tokens
 ---------------
