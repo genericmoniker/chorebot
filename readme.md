@@ -2,7 +2,14 @@ chorebot
 ========
 
 chorebot helps with the tedious parts of organizing household chores using
-Trello.
+Trello as the user interface and data store.
+
+Use Trello to create the chores that you want, and chorebot, which runs as a 
+service, will assign them out at an appropriate frequency.
+ 
+Gamification of chore completion is planned.
+
+**WARNING**: Very early development!
 
 
 Trello Board Setup
@@ -18,7 +25,7 @@ the person's first name according to their Trello account, as well as "To Do"
 or "ToDo". For example: "Eric - To Do".
 
 Create cards for all your chores. Use labels to indicate how often the chore
-should be done:
+should be done. Supported label names are:
 
 * Daily
 * Twice weekly
@@ -44,6 +51,9 @@ Get an API key and secret at
 Follow the directions for getting an OAuth token and secret at
 [https://github.com/sarumont/py-trello](https://github.com/sarumont/py-trello).
 
+All of these need to be saved in config.ini.
+
+
 Deployment
 ----------
 
@@ -58,16 +68,5 @@ To Do
 -----
 
 * Email on error (or create a card?)
-
 * Optimal retrieval from server (esp. Card.fetch)
-
-* Deployment - build virtualenv and get the code there
-
-https://hynek.me/talks/python-deployments/
-http://dan.bravender.net/2012/5/11/git-based_fabric_deploys_are_awesome.html
-
-* Daemonize the application using... what? 
-  upstart is not recommended? Scary warning if you try to install it.
-  systemd?
-  http://supervisord.org/index.html
-
+* Fail in an obvious way if config.ini isn't set up
