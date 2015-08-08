@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 import random
+import pytz
 from chorebot.cache import BoardCache
 from chorebot.config import create_client
+from chorebot.gamify import update_game
 from chorebot.log import get_logger
 
 logger = get_logger(__name__)
@@ -10,7 +12,10 @@ logger = get_logger(__name__)
 def daily_update():
     logger.info('Caching board...')
     chores_board = BoardCache(get_chores_board(create_client()))
-    now = datetime.now()
+    now = datetime.utcnow().replace(tzinfo=pytz.utc)
+    logger.info('Updating game...')
+    update_game(get_todo_lists(chores_board), now)
+    logger.info('Updating chores...')
     update_chores(chores_board, now)
 
 

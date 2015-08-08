@@ -57,6 +57,10 @@ supervisorctl restart chorebot
 To Do
 -----
 
+* Email on error (or create a card?)
+
+* Optimal retrieval from server (esp. Card.fetch)
+
 * Deployment - build virtualenv and get the code there
 
 https://hynek.me/talks/python-deployments/
