@@ -4,12 +4,26 @@ chorebot
 chorebot helps with the tedious parts of organizing household chores using
 Trello as the user interface and data store.
 
-Use Trello to create the chores that you want, and chorebot, which runs as a 
-service, will assign them out at an appropriate frequency.
+Use Trello to create the chores that you want, and chorebot will assign them 
+out at an appropriate frequency.
  
 Gamification of chore completion is planned.
 
 **WARNING**: Very early development!
+
+
+Setup
+-----
+
+Chorebot depends on Python 2.7.
+
+After cloning the chorebot source, you can optionally create and activate a 
+virtual environment. Install the dependencies with:
+
+    pip install -r requirements.txt
+
+Chorebot can be set up to run nightly using cron or some other scheduling
+mechanism that your OS supports. Simply invoke main.py.
 
 
 Trello Board Setup
@@ -54,19 +68,10 @@ Follow the directions for getting an OAuth token and secret at
 All of these need to be saved in config.ini.
 
 
-Deployment
-----------
-
-You can use [supervisord](http://supervisord.org/index.html) to manage the
-process.
-
-Copy the project files to the host. Restart the process with:
-supervisorctl restart chorebot
-
-
 To Do
 -----
 
 * Email on error (or create a card?)
 * Optimal retrieval from server (esp. Card.fetch)
 * Fail in an obvious way if config.ini isn't set up
+* Optionally get board name from config.ini (also for testing).
