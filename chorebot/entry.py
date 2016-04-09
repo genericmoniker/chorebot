@@ -6,7 +6,3 @@ from chorebot.log import setup_logging
 def main():
     setup_logging()
     daily_update()
-
-
-if __name__ == '__main__':
-    main()

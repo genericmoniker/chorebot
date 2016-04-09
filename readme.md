@@ -26,6 +26,18 @@ Chorebot can be set up to run nightly using cron or some other scheduling
 mechanism that your OS supports. Simply invoke main.py.
 
 
+Using Docker
+------------
+
+Chorebot can run as a Docker container.
+
+    $ docker build -t chorebot .
+    $ docker run -t --rm -v ${CONFIG_DIR}:/config --name chorebot-cont chorebot
+
+Where `${CONFIG_DIR}` would be replaced by the path to a directory that
+contains your config.ini file (see Keys and Tokens below).
+
+
 Trello Board Setup
 ------------------
 
@@ -74,4 +86,5 @@ To Do
 * Email on error (or create a card?)
 * Optimal retrieval from server (esp. Card.fetch)
 * Fail in an obvious way if config.ini isn't set up
-* Optionally get board name from config.ini (also for testing).
+* Optionally get board name from config.ini (also for testing)
+* Modify py-trello to use a requests session

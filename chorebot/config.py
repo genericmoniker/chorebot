@@ -19,8 +19,12 @@ def create_client():
 
 def _read_config():
     try:
-        config_dir = os.path.dirname(os.path.dirname(__file__))
-        config_file = os.path.join(config_dir, 'config.ini')
+        # Try Docker container location
+        config_file = '/config/config.ini'
+        if not os.path.exists(config_file):
+            # Otherwise use local config
+            config_dir = os.path.dirname(os.path.dirname(__file__))
+            config_file = os.path.join(config_dir, 'config.ini')
         parser = ConfigParser()
         parser.read(config_file)
         return parser
