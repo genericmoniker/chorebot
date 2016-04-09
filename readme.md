@@ -1,6 +1,10 @@
 chorebot
 ========
 
+[![Build Status]
+(https://travis-ci.org/genericmoniker/chorebot.svg?branch=master)]
+(https://travis-ci.org/genericmoniker/chorebot)
+
 chorebot helps with the tedious parts of organizing household chores using
 Trello as the user interface and data store.
 
