@@ -3,3 +3,6 @@
 
 pytz
 tzlocal
+
+# development requirements
+pytest

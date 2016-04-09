@@ -64,7 +64,7 @@ group of people every time, add the "members" to that card.
 Cards without members will be shuffled and dealt among all the to do lists.
 
 Note: When looking for boards, lists, cards and members, chorebot searches 
-case-insensitively, so for example, your board could be "Smithy family chores",
+case-insensitively, so for example, your board could be "Smith family chores",
 and your to do list "eric-todo" and those will work just fine.
 
 
