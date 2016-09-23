@@ -1,22 +1,14 @@
-from datetime import datetime, timedelta
 import random
+from datetime import datetime, timedelta
+
 import pytz
-from chorebot.cache import BoardCache
-from chorebot.config import create_client
-from chorebot.gamify import update_game
+from tzlocal import get_localzone
+
+from chorebot.config import get_chore_board_name
 from chorebot.log import get_logger
+from chorebot.trello import TrelloClient
 
 logger = get_logger(__name__)
-
-
-def daily_update():
-    logger.info('Caching board...')
-    chores_board = BoardCache(get_chores_board(create_client()))
-    now = datetime.utcnow().replace(tzinfo=pytz.utc)
-    logger.info('Updating game...')
-    update_game(get_todo_lists(chores_board), now)
-    logger.info('Updating chores...')
-    update_chores(chores_board, now)
 
 
 def update_chores(chores_board, now):
@@ -24,7 +16,6 @@ def update_chores(chores_board, now):
     bi_weekly_chores = []
     weekly_chores = []
     for card in chores_board.cards:
-        card.fetch(False)
         if has_label(card, 'Daily'):
             set_due_today(card, now)
             daily_chores.append(card)
@@ -60,7 +51,7 @@ def deal(cards, lists):
         card = cards.pop()
         new_list = lists[list_i % len(lists)]
         logger.info('{} => {}'.format(card.name, new_list.name))
-        card.change_list(new_list.id)
+        TrelloClient.instance.move_card(card, new_list)
         list_i += 1
 
 
@@ -69,10 +60,18 @@ def set_due_today(card, now):
 
 
 def set_due_in(card, now, days):
-    # The dates in the library and API are unclear (probably UTC, but the
-    # library isn't setting a time); hack by adding a day, which seems to
-    # produce the desired results.
-    card.set_due(now + timedelta(days=days + 1))
+    tz = get_localzone()
+    due_hour = 23  # 11 PM
+    due = tz.localize(
+        datetime(
+            now.year,
+            now.month,
+            now.day,
+            due_hour
+        ) + timedelta(days=days)
+    )
+    due_utc = due.astimezone(pytz.utc)
+    TrelloClient.instance.reschedule_card(card, due_utc)
 
 
 def has_label(card, label_name):
@@ -82,15 +81,6 @@ def has_label(card, label_name):
         if label.name.lower() == label_name:
             return True
     return False
-
-
-def get_chores_board(client):
-    """Find and return the chores board."""
-    boards = client.list_boards()
-    for board in boards:
-        if 'chores' in board.name.lower():
-            return board
-    raise Exception('Chores board not found.')
 
 
 def get_todo_lists(board):
@@ -123,3 +113,8 @@ def get_todo_lists_by_card_members(board, card):
 def _is_todo_list(list_):
     name = list_.name.lower()
     return 'todo' in name or 'to do' in name
+
+
+def chore_board_matcher(name):
+    chore_board_name = get_chore_board_name()
+    return chore_board_name.lower() in name.lower()

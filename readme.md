@@ -5,11 +5,11 @@ chorebot
 (https://travis-ci.org/genericmoniker/chorebot.svg?branch=master)]
 (https://travis-ci.org/genericmoniker/chorebot)
 
-chorebot helps with the tedious parts of organizing household chores using
-Trello as the user interface and data store.
+chorebot helps with the tedious parts of organizing household chores 
+using Trello as the user interface and data store.
 
-Use Trello to create the chores that you want, and chorebot will assign them 
-out at an appropriate frequency.
+Use Trello to create the chores that you want, and chorebot will assign 
+them out at an appropriate frequency.
  
 Gamification of chore completion is planned.
 
@@ -21,13 +21,13 @@ Setup
 
 Chorebot depends on Python 2.7.
 
-After cloning the chorebot source, you can optionally create and activate a 
-virtual environment. Install the dependencies with:
+After cloning the chorebot source, you can optionally create and 
+activate a virtual environment. Install the dependencies with:
 
     pip install -r requirements.txt
 
-Chorebot can be set up to run nightly using cron or some other scheduling
-mechanism that your OS supports. Simply invoke main.py.
+Chorebot can be set up to run nightly using cron or some other 
+scheduling mechanism that your OS supports. Simply invoke main.py.
 
 
 Using Docker
@@ -39,7 +39,7 @@ Chorebot can run as a Docker container.
     $ docker run -t --rm -v ${CONFIG_DIR}:/config --name chorebot-cont chorebot
 
 Where `${CONFIG_DIR}` would be replaced by the path to a directory that
-contains your config.ini file (see Keys and Tokens below).
+contains your config.ini file (see Configuration below).
 
 
 Trello Board Setup
@@ -47,48 +47,60 @@ Trello Board Setup
 
 Create a board that has "Chores" in the name.
 
-Create a holding list for chores. This could be called "Done", but it doesn't
-really matter.
+Create a holding list for chores. This could be called "Done", but it 
+doesn't really matter.
 
-Create a list for each person to be assigned chores. The list should include 
-the person's first name according to their Trello account, as well as "To Do"
-or "ToDo". For example: "Eric - To Do".
+Create a list for each person to be assigned chores. The list should 
+include the person's first name according to their Trello account, as 
+well as "To Do" or "ToDo". For example: "Eric - To Do".
 
-Create cards for all your chores. Use labels to indicate how often the chore
-should be done. Supported label names are:
+Create cards for all your chores. Use labels to indicate how often the 
+chore should be done. Supported label names are:
 
 * Daily
 * Twice weekly
 * Weekly
 * Monthly
 
-If you want a chore to go to a specific person every time or shuffled among a 
-group of people every time, add the "members" to that card.
+If you want a chore to go to a specific person every time or shuffled 
+among a group of people every time, add the "members" to that card.
 
-Cards without members will be shuffled and dealt among all the to do lists.
+Cards without members will be shuffled and dealt among all the to do 
+lists.
 
-Note: When looking for boards, lists, cards and members, chorebot searches 
-case-insensitively, so for example, your board could be "Smith family chores",
-and your to do list "eric-todo" and those will work just fine.
+Note: When looking for boards, lists, cards and members, chorebot 
+searches case-insensitively, so for example, your board could be "Smith 
+family chores", and your to do list "eric-todo" and those will work just 
+fine.
 
 
-Keys and Tokens
----------------
+Configuration
+-------------
 
-Get an API key and secret at 
-[https://trello.com/app-key](https://trello.com/app-key).
+Get an API key at: 
+[https://trello.com/app-key](https://trello.com/app-key)
 
-Follow the directions for getting an OAuth token and secret at
-[https://github.com/sarumont/py-trello](https://github.com/sarumont/py-trello).
+Also, generate a token on the same page by clicking the appropriate link
+there.
 
-All of these need to be saved in config.ini.
+These need to be saved in config.ini, which should be either in the 
+project root directory or `/config/config.ini`.
+
+    [Auth]
+    api_key: <your API key goes here>
+    token: <your token goes here>
+    
+You can also customize which board chorebot will use: 
+    
+    [App]
+    chore_board: housework
 
 
 To Do
 -----
 
-* Email on error (or create a card?)
-* Optimal retrieval from server (esp. Card.fetch)
+* Implement "Monthly" chores
+* Create a card logger so that logs can be read with Trello
 * Fail in an obvious way if config.ini isn't set up
-* Optionally get board name from config.ini (also for testing)
-* Modify py-trello to use a requests session
+* Integration tests with a test board
+* Unit tests for gamify.py

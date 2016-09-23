@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from chorebot.trello import TrelloClient
 
 
 def update_game(todo_lists, now):
@@ -13,22 +14,20 @@ def create_report_card(list_, now):
         overdue,
         '' if overdue == 1 else 's'
     )
-    card.set_name(name)
-    card.set_pos('top')
+    TrelloClient.instance.rename_card(card, name)
+    TrelloClient.instance.reposition_card(card, 'top')
 
 
 def _get_report_card(list_):
-    cards = list_.list_cards()
-    for card in cards:
+    for card in list_.cards:
         if card.name.startswith('Reputation:'):
             return card
-    return list_.add_card('Reputation:')
+    return TrelloClient.instance.add_card('Reputation:', list_)
 
 
 def get_overdue_cards(list_, now):
     overdue = []
-    for card in list_.list_cards():
-        card.fetch()
-        if card.due_date and card.due_date < now:
+    for card in list_.cards:
+        if card.due and card.due < now:
             overdue.append(card)
     return overdue
