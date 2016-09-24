@@ -2,6 +2,7 @@ from datetime import datetime
 import unittest
 
 import mock
+import pytz
 
 from chorebot import chores
 from chorebot.chores import get_todo_lists, get_todo_lists_by_card_members, \
@@ -39,8 +40,11 @@ class UpdateChoresTest(unittest.TestCase):
         cards.append(left_over)
         self.board = Board(lists, cards, members)
 
-    def test_daily_assigned(self):
-        now = datetime(2015, 7, 21, 3)  # a Tuesday
+    @mock.patch('chorebot.chores.get_localzone')
+    def test_daily_assigned(self, mock_get_localzone):
+        """Daily chores are assigned each day, due by end of day."""
+        mock_get_localzone.return_value = pytz.utc
+        now = datetime(2015, 7, 21, 3).replace(tzinfo=pytz.utc)  # a Tuesday
 
         update_chores(self.board, now)
 
@@ -48,10 +52,13 @@ class UpdateChoresTest(unittest.TestCase):
         for card in self.board.cards:
             if has_label(card, 'Daily'):
                 self.assertNotEqual(card.list_id, list_done.id)
-                self.assertEqual(card.due.day, 22)  # UTC issue
+                self.assertEqual(card.due.day, 21)
 
-    def test_bi_weekly_assigned(self):
-        now = datetime(2015, 7, 23, 3)  # a Thursday
+    @mock.patch('chorebot.chores.get_localzone')
+    def test_bi_weekly_assigned(self, mock_get_localzone):
+        """Bi-weekly chores are assigned Mon/Thu, due in 2 days."""
+        mock_get_localzone.return_value = pytz.utc
+        now = datetime(2015, 7, 23, 3).replace(tzinfo=pytz.utc)  # a Thursday
 
         update_chores(self.board, now)
 
@@ -59,10 +66,13 @@ class UpdateChoresTest(unittest.TestCase):
         for card in self.board.cards:
             if has_label(card, 'Twice Weekly'):
                 self.assertNotEqual(card.list_id, list_done.id)
-                self.assertEqual(card.due.day, 26)  # UTC issue
+                self.assertEqual(card.due.day, 25)
 
-    def test_weekly_assigned(self):
-        now = datetime(2015, 7, 20, 3)  # a Monday
+    @mock.patch('chorebot.chores.get_localzone')
+    def test_weekly_assigned(self, mock_get_localzone):
+        """Weekly chores are assigned on Mon, due in 6 days."""
+        mock_get_localzone.return_value = pytz.utc
+        now = datetime(2015, 7, 20, 3).replace(tzinfo=pytz.utc)  # a Monday
 
         update_chores(self.board, now)
 
@@ -70,7 +80,7 @@ class UpdateChoresTest(unittest.TestCase):
         for card in self.board.cards:
             if has_label(card, 'Weekly'):
                 self.assertNotEqual(card.list_id, list_done.id)
-                self.assertEqual(card.due.day, 26)  # UTC issue
+                self.assertEqual(card.due.day, 26)
 
     def test_single_member_assigned(self):
         now = datetime(2015, 7, 20, 3)  # a Monday

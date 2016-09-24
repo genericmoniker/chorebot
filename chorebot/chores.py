@@ -19,11 +19,11 @@ def update_chores(chores_board, now):
         if has_label(card, 'Daily'):
             set_due_today(card, now)
             daily_chores.append(card)
-        elif has_label(card, 'Twice weekly') and now.weekday() in [0, 3]:
+        elif has_label(card, 'Twice weekly') and now.weekday() in (0, 3):
             set_due_in(card, now, 2)
             bi_weekly_chores.append(card)
         elif has_label(card, 'Weekly') and now.weekday() == 0:
-            set_due_in(card, now, 5)
+            set_due_in(card, now, 6)
             weekly_chores.append(card)
     assign(chores_board, daily_chores)
     assign(chores_board, bi_weekly_chores)
