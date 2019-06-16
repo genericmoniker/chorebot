@@ -1,0 +1,8 @@
+.idea
+.pytest_cache
+.vscode
+chorebot.egg-info
+.gitignore
+.pre-commit-config.yaml
+.travis.yaml
+README.md

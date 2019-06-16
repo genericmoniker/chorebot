@@ -10,19 +10,19 @@ import requests
 
 
 class TrelloClient(object):
-    BASE_URL = 'https://api.trello.com/1/'
+    BASE_URL = "https://api.trello.com/1/"
     instance = None
 
     def __init__(self, key, token, session=None):
         TrelloClient.instance = self
-        logging.getLogger('requests').setLevel(logging.WARN)
+        logging.getLogger("requests").setLevel(logging.WARN)
         self._s = session or requests.session()
         self._s.params = dict(key=key, token=token)
 
     def load_board(self, name_matcher):
         boards_data = self._get_boards()
         board_data = self._find_board(boards_data, name_matcher)
-        board_id = board_data['id']
+        board_id = board_data["id"]
         lists = [List.from_data(d) for d in self._get_lists(board_id)]
         cards = [Card.from_data(d) for d in self._get_cards(board_id)]
         members = [Member.from_data(d) for d in self._get_members(board_id)]
@@ -31,29 +31,29 @@ class TrelloClient(object):
         return Board(lists, cards, members, board_id)
 
     def add_card(self, name, to_list):
-        url = self.BASE_URL + 'cards'
+        url = self.BASE_URL + "cards"
         data = dict(name=name, idList=to_list.id, due=None)
         card_id = self._post(url, data)
-        data['id'] = card_id
+        data["id"] = card_id
         return Card.from_data(data)
 
     def rename_card(self, card, new_name):
         card.name = new_name
-        url = self.BASE_URL + 'cards/{}/name'.format(card.id)
+        url = self.BASE_URL + "cards/{}/name".format(card.id)
         self._put(url, dict(value=new_name))
 
     def move_card(self, card, to_list):
         card.list_id = to_list.id
-        url = self.BASE_URL + 'cards/{}/idList'.format(card.id)
+        url = self.BASE_URL + "cards/{}/idList".format(card.id)
         self._put(url, dict(value=to_list.id))
 
     def reschedule_card(self, card, due):
         card.due = due
-        url = self.BASE_URL + 'cards/{}/due'.format(card.id)
+        url = self.BASE_URL + "cards/{}/due".format(card.id)
         self._put(url, dict(value=due.isoformat()))
 
     def reposition_card(self, card, pos):
-        url = self.BASE_URL + 'cards/{}/pos'.format(card.id)
+        url = self.BASE_URL + "cards/{}/pos".format(card.id)
         self._put(url, dict(value=pos))
 
     def _get(self, url):
@@ -68,35 +68,35 @@ class TrelloClient(object):
     def _post(self, url, data):
         r = self._s.post(url, data)
         r.raise_for_status()
-        return r.json().get('id')
+        return r.json().get("id")
 
     def _get_boards(self):
         # https://developers.trello.com/advanced-reference/member#get-1-members-idmember-or-username-boards
-        url = self.BASE_URL + 'members/me/boards'
+        url = self.BASE_URL + "members/me/boards"
         return self._get(url)
 
     def _get_lists(self, board_id):
         # https://developers.trello.com/advanced-reference/board#get-1-boards-board-id-lists-filter
-        url = self.BASE_URL + 'boards/{}/lists'.format(board_id)
+        url = self.BASE_URL + "boards/{}/lists".format(board_id)
         return self._get(url)
 
     def _get_cards(self, board_id):
         # https://developers.trello.com/advanced-reference/board#get-1-boards-board-id-lists-filter
-        url = self.BASE_URL + 'boards/{}/cards'.format(board_id)
+        url = self.BASE_URL + "boards/{}/cards".format(board_id)
         return self._get(url)
 
     def _get_members(self, board_id):
         # https://developers.trello.com/advanced-reference/board#get-1-boards-board-id-members
-        url = self.BASE_URL + 'boards/{}/members'.format(board_id)
+        url = self.BASE_URL + "boards/{}/members".format(board_id)
         return self._get(url)
 
     @staticmethod
     def _find_board(boards_data, name_matcher):
         for board_data in boards_data:
-            if name_matcher(board_data['name']):
+            if name_matcher(board_data["name"]):
                 return board_data
         else:
-            raise Exception('Board not found.')
+            raise Exception("Board not found.")
 
 
 class TrelloObject(object):
@@ -113,7 +113,6 @@ class TrelloObject(object):
 
 
 class Board(TrelloObject):
-
     def __init__(self, lists=None, cards=None, members=None, id_=None):
         self.id = id_ or self.next_id()
         self.lists = lists
@@ -134,7 +133,6 @@ class Board(TrelloObject):
 
 
 class List(TrelloObject):
-
     def __init__(self, name, id_=None):
         self.id = id_ or self.next_id()
         self.name = name
@@ -142,16 +140,19 @@ class List(TrelloObject):
 
     @classmethod
     def from_data(cls, data):
-        return cls(
-            data['name'],
-            data['id'],
-        )
+        return cls(data["name"], data["id"])
 
 
 class Card(TrelloObject):
-
-    def __init__(self, member_ids=None, labels=None, name=None, due=None,
-                 list_id=None, id_=None):
+    def __init__(
+        self,
+        member_ids=None,
+        labels=None,
+        name=None,
+        due=None,
+        list_id=None,
+        id_=None,
+    ):
         self.id = id_ or self.next_id()
         self.member_ids = member_ids or []
         self.labels = labels or []
@@ -162,12 +163,12 @@ class Card(TrelloObject):
     @classmethod
     def from_data(cls, data):
         return cls(
-            data.get('idMembers', []),
-            [Label.from_data(d) for d in data.get('labels', [])],
-            data['name'],
-            data['due'],
-            data['idList'],
-            data.get('id', None),
+            data.get("idMembers", []),
+            [Label.from_data(d) for d in data.get("labels", [])],
+            data["name"],
+            data["due"],
+            data["idList"],
+            data.get("id", None),
         )
 
     @staticmethod
@@ -178,28 +179,20 @@ class Card(TrelloObject):
 
 
 class Member(TrelloObject):
-
     def __init__(self, full_name, id_=None):
         self.id = id_ or self.next_id()
         self.full_name = full_name
 
     @classmethod
     def from_data(cls, data):
-        return cls(
-            data['fullName'],
-            data['id'],
-        )
+        return cls(data["fullName"], data["id"])
 
 
 class Label(TrelloObject):
-
     def __init__(self, name, id_=None):
         self.id = id_ or self.next_id()
         self.name = name
 
     @classmethod
     def from_data(cls, data):
-        return cls(
-            data['name'],
-            data['id'],
-        )
+        return cls(data["name"], data["id"])
