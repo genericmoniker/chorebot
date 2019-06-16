@@ -9,8 +9,8 @@ COPY poetry.lock .
 
 COPY . .
 
-RUN pip install --upgrade pip
-RUN pip install poetry
+RUN pip install --user --upgrade pip
+RUN pip install --user poetry
 RUN poetry install --no-dev -v 
 
 CMD ["python", "./main.py"]
