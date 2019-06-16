@@ -1,9 +1,9 @@
 chorebot
 ========
 
-[![Build Status]
-(https://travis-ci.org/genericmoniker/chorebot.svg?branch=master)]
-(https://travis-ci.org/genericmoniker/chorebot)
+[![Build
+Status](https://travis-ci.org/genericmoniker/chorebot.svg?branch=master)](https://travis-ci.org/genericmoniker/chorebot)
+
 
 chorebot helps with the tedious parts of organizing household chores 
 using Trello as the user interface and data store.
@@ -19,12 +19,8 @@ Gamification of chore completion is planned.
 Setup
 -----
 
-Chorebot depends on Python 2.7.
-
-After cloning the chorebot source, you can optionally create and 
-activate a virtual environment. Install the dependencies with:
-
-    pip install -r requirements.txt
+Chorebot depends on Python 3.6+ and is managed with
+[Poetry](https://poetry.eustace.io/).
 
 Chorebot can be set up to run nightly using cron or some other 
 scheduling mechanism that your OS supports. Simply invoke main.py.
