@@ -30,7 +30,7 @@ jobs:
         - pip install poetry
         - poetry install -v
       script:
-        - pytest --cov
+        - pytest
     - stage: docker image
       script:
         - docker build -t genericmoniker/chorebot .
