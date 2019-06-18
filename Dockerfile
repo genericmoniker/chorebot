@@ -11,6 +11,6 @@ COPY . .
 
 RUN pip install --user --upgrade pip
 RUN pip install --user poetry
-RUN /home/appuser/.local/bin/poetrypoetry install --no-dev -v 
+RUN /home/appuser/.local/bin/poetry install --no-dev -v 
 
 CMD ["python", "./main.py"]
